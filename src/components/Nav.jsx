@@ -5,15 +5,21 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
+import { Save, FolderOpen } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 
-const Nav = ({ onClick }) => (
+const Nav = ({ onOpen, onSave }) => (
   <>
     <List component="nav">
-      <ListItem button onClick={onClick}>
+      <ListItem button onClick={onOpen}>
         <ListItemIcon>
-          <SaveIcon />
+          <FolderOpen />
+        </ListItemIcon>
+        <ListItemText primary="Open" />
+      </ListItem>
+      <ListItem button onClick={onSave}>
+        <ListItemIcon>
+          <Save />
         </ListItemIcon>
         <ListItemText primary="Save" />
       </ListItem>
@@ -23,7 +29,8 @@ const Nav = ({ onClick }) => (
 
 // props validation
 Nav.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onOpen: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 export default Nav;

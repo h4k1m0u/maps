@@ -9,6 +9,9 @@ import {
 import { EditControl } from 'react-leaflet-draw';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import hash from 'object-hash';
+
+// import assets
 import map from '../assets/maps/countries.geo.json';
 import tokens from '../assets/access/tokens.json';
 
@@ -26,18 +29,25 @@ const onEachFeature = (feature, layer) => {
   layer.bindPopup(`${name}`);
 };
 
-const Geo = ({ coords, zoom, onCreated }) => {
+const Geo = ({
+  coords,
+  zoom,
+  onCreated,
+  featureOpened,
+}) => {
   // hooks
   const styles = useStyles();
 
   // layer control checkboxes
   const { BaseLayer, Overlay } = LayersControl;
 
+  // key used to reload map once new feature opened
   return (
     <Map
       center={coords}
       zoom={zoom}
       className={styles.map}
+      key={hash(featureOpened)}
     >
       <LayersControl>
         <BaseLayer checked name="OpenStreetMap">
@@ -63,20 +73,33 @@ const Geo = ({ coords, zoom, onCreated }) => {
           )
         }
 
-        <Overlay name="Countries">
+        <Overlay name="Countries (green)">
           <GeoJSON
             data={map}
             onEachFeature={onEachFeature}
+            color="green"
           />
         </Overlay>
 
-        <Overlay checked name="Features">
+        <Overlay checked name="Features drawn (blue)">
           <FeatureGroup>
             <EditControl
               onCreated={onCreated}
             />
           </FeatureGroup>
         </Overlay>
+
+        {
+          featureOpened !== ''
+          && (
+            <Overlay checked name="Features opened (red)">
+              <GeoJSON
+                data={JSON.parse(featureOpened)}
+                color="red"
+              />
+            </Overlay>
+          )
+        }
       </LayersControl>
     </Map>
   );
@@ -87,6 +110,7 @@ Geo.propTypes = {
   coords: PropTypes.arrayOf(PropTypes.number).isRequired,
   zoom: PropTypes.number.isRequired,
   onCreated: PropTypes.func.isRequired,
+  featureOpened: PropTypes.string.isRequired,
 };
 
 export default Geo;
