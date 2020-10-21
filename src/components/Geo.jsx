@@ -26,17 +26,7 @@ const onEachFeature = (feature, layer) => {
   layer.bindPopup(`${name}`);
 };
 
-const onCreated = (e) => {
-  // download geojson feature drawn
-  const geojson = e.layer.toGeoJSON();
-  const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(geojson))}`;
-  const link = document.createElement('a');
-  link.href = data;
-  link.download = 'feature.geo.json';
-  link.click();
-};
-
-const Geo = ({ coords, zoom }) => {
+const Geo = ({ coords, zoom, onCreated }) => {
   // hooks
   const styles = useStyles();
 
@@ -73,7 +63,7 @@ const Geo = ({ coords, zoom }) => {
           )
         }
 
-        <Overlay checked name="Countries">
+        <Overlay name="Countries">
           <GeoJSON
             data={map}
             onEachFeature={onEachFeature}
@@ -94,12 +84,9 @@ const Geo = ({ coords, zoom }) => {
 
 // props validation
 Geo.propTypes = {
-  coords: PropTypes.arrayOf(PropTypes.number),
-  zoom: PropTypes.number,
-};
-Geo.defaultProps = {
-  coords: [],
-  zoom: 1,
+  coords: PropTypes.arrayOf(PropTypes.number).isRequired,
+  zoom: PropTypes.number.isRequired,
+  onCreated: PropTypes.func.isRequired,
 };
 
 export default Geo;

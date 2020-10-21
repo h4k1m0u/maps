@@ -32,10 +32,7 @@ const Header = ({ appName }) => {
 
 // avoids eslint warning about props
 Header.propTypes = {
-  appName: PropTypes.string,
-};
-Header.defaultProps = {
-  appName: 'My App',
+  appName: PropTypes.string.isRequired,
 };
 
 export default Header;
