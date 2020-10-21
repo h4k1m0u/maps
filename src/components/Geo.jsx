@@ -4,7 +4,9 @@ import {
   TileLayer,
   GeoJSON,
   LayersControl,
+  FeatureGroup,
 } from 'react-leaflet';
+import { EditControl } from 'react-leaflet-draw';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import map from '../assets/maps/countries.geo.json';
@@ -22,6 +24,16 @@ const onEachFeature = (feature, layer) => {
   // show popup on click
   const { name } = feature.properties;
   layer.bindPopup(`${name}`);
+};
+
+const onCreated = (e) => {
+  // download geojson feature drawn
+  const geojson = e.layer.toGeoJSON();
+  const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(geojson))}`;
+  const link = document.createElement('a');
+  link.href = data;
+  link.download = 'feature.geo.json';
+  link.click();
 };
 
 const Geo = ({ coords, zoom }) => {
@@ -66,6 +78,14 @@ const Geo = ({ coords, zoom }) => {
             data={map}
             onEachFeature={onEachFeature}
           />
+        </Overlay>
+
+        <Overlay checked name="Features">
+          <FeatureGroup>
+            <EditControl
+              onCreated={onCreated}
+            />
+          </FeatureGroup>
         </Overlay>
       </LayersControl>
     </Map>
