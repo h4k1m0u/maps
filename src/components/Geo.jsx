@@ -7,12 +7,14 @@ import {
   FeatureGroup,
 } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
+import Choropleth from 'react-leaflet-choropleth';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import hash from 'object-hash';
 
 // import assets
-import map from '../assets/maps/countries.geo.json';
+import countries from '../assets/maps/countries.geo.json';
+import densities from '../assets/maps/densities.geo.json';
 import tokens from '../assets/access/tokens.json';
 
 // custom css
@@ -22,12 +24,6 @@ const useStyles = makeStyles(() => ({
     width: '100%',
   },
 }));
-
-const onEachFeature = (feature, layer) => {
-  // show popup on click
-  const { name } = feature.properties;
-  layer.bindPopup(`${name}`);
-};
 
 const Geo = ({
   coords,
@@ -75,9 +71,29 @@ const Geo = ({
 
         <Overlay name="Countries (green)">
           <GeoJSON
-            data={map}
-            onEachFeature={onEachFeature}
+            data={countries}
+            onEachFeature={(feature, layer) => {
+              layer.bindPopup(feature.properties.name);
+            }}
             color="green"
+          />
+        </Overlay>
+
+        <Overlay checked name="Densities (Choropleth)">
+          <Choropleth
+            data={densities}
+            valueProperty={(feature) => feature.properties.density}
+            onEachFeature={(feature, layer) => {
+              layer.bindPopup(`${feature.properties.name}: ${feature.properties.density}`);
+            }}
+            steps={5}
+            scale={['white', 'red']}
+            mode="q"
+            style={{
+              color: '#fff',
+              weight: 2,
+              fillOpacity: 0.8,
+            }}
           />
         </Overlay>
 

@@ -74,8 +74,8 @@ class App extends React.Component {
         <Grid container>
           <Grid item xs={10}>
             <Geo
-              coords={[36, 3]}
-              zoom={5}
+              coords={[36, -95]}
+              zoom={4}
               onCreated={this.onCreated}
               featureOpened={featureOpened}
             />
